@@ -10,4 +10,5 @@ public interface Dao <T> {
     Optional<T> findById(long id);
     void delete(T t);
     T create(T t);
+    T update(T t);
 }

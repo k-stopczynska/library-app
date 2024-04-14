@@ -122,10 +122,26 @@ public class BookDao extends DbConnection implements Dao <Book> {
                     book.setId(rset.getLong(1));
                 }
             } catch (SQLException e) {
-                LOGGER.throwing("BookDao", "findById", e);
+                LOGGER.throwing("BookDao", "create", e);
             }
         } catch (SQLException e) {
-            LOGGER.throwing("BookDao", "delete", e);
+            LOGGER.throwing("BookDao", "create", e);
+        }
+        return book;
+    }
+
+    @Override
+    public Book update(Book book) {
+        String query = String.format("UPDATE %s SET title = ? WHERE id = ?", Constants.DB_TABLE.getValue());
+        try (
+                Connection connection = getConnection();
+                PreparedStatement prepStmt = connection.prepareStatement(query)
+        ) {
+            prepStmt.setString(1, book.getTitle());
+            prepStmt.setLong(2, book.getId());
+            prepStmt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.throwing("BookDao", "update", e);
         }
         return book;
     }

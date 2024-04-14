@@ -36,11 +36,17 @@ public class App
 //            bookDao.delete(book);
 //        }
 
+//        Book newBook = new Book();
+//        newBook.setTitle("some new book");
+//        Book copy = bookDao.create(newBook);
+//        System.out.println(copy.getTitle());
+//        System.out.println(copy.getId());
+
         Book newBook = new Book();
-        newBook.setTitle("some new book");
-        Book copy = bookDao.create(newBook);
+        newBook.setId(10);
+        newBook.setTitle("new Alchemist");
+        Book copy = bookDao.update(newBook);
         System.out.println(copy.getTitle());
         System.out.println(copy.getId());
-
     }
 }
