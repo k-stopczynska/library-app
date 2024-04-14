@@ -25,7 +25,6 @@ public class DbConnection {
 
         Connection connection = DriverManager.getConnection(url, user, password);
         LOGGER.info(String.format("Connected to database %s", url));
-        System.out.println("Connection in db_connection" + connection);
 
         return connection;
     }

@@ -5,20 +5,18 @@ import com.library.app.db_utils.Dao;
 import com.library.app.db_utils.DbConnection;
 import com.library.app.model.Book;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Logger;
 
-import static com.library.app.Constants.DB_TABLE;
 
 public class BookDao extends DbConnection implements Dao <Book> {
 
     Logger LOGGER = Logger.getLogger("");
+
     @Override
     public List<Book> findAll() {
         List<Book> books = new ArrayList<>(Collections.emptyList());
@@ -27,8 +25,7 @@ public class BookDao extends DbConnection implements Dao <Book> {
                 Connection connection = getConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet rst = stmt.executeQuery(query)
-                ) {
-            System.out.println("BookDao in try");
+        ) {
             while (rst.next()) {
                 Book book = new Book();
                 book.setId(rst.getLong("id"));
@@ -40,5 +37,59 @@ public class BookDao extends DbConnection implements Dao <Book> {
             LOGGER.throwing("BookDao", "findAll", e);
         }
         return books;
+    }
+
+    @Override
+    public Optional<Book> findByTitle(String title) {
+        String query = String.format("SELECT id, title FROM %s WHERE title = ?", Constants.DB_TABLE.getValue());
+        Optional<Book> book = Optional.empty();
+        try (
+                Connection connection = getConnection();
+                PreparedStatement prepStmt = connection.prepareStatement(query)
+        ) {
+            prepStmt.setString(1, title);
+            try (
+                    ResultSet rset = prepStmt.executeQuery()) {
+                Book resBook = new Book();
+                if (rset.next()) {
+                    resBook.setId(rset.getLong("id"));
+                    resBook.setTitle(rset.getNString("title"));
+                }
+                book = Optional.of(resBook);
+
+            } catch (SQLException e) {
+                LOGGER.throwing("BookDao", "findByTitle", e);
+            }
+        } catch (SQLException e) {
+            LOGGER.throwing("BookDao", "findByTitle", e);
+        }
+        return book;
+    }
+
+    @Override
+    public Optional<Book> findById(long id) {
+        String query = String.format("SELECT id, title FROM %s WHERE id = ?", Constants.DB_TABLE.getValue());
+        Optional<Book> book = Optional.empty();
+        try (
+                Connection connection = getConnection();
+                PreparedStatement prepStmt = connection.prepareStatement(query)
+        ) {
+            prepStmt.setLong(1, id);
+            try (
+                    ResultSet rset = prepStmt.executeQuery()) {
+                Book resBook = new Book();
+                if (rset.next()) {
+                    resBook.setId(rset.getLong("id"));
+                    resBook.setTitle(rset.getNString("title"));
+                }
+                book = Optional.of(resBook);
+
+            } catch (SQLException e) {
+                LOGGER.throwing("BookDao", "findById", e);
+            }
+        } catch (SQLException e) {
+            LOGGER.throwing("BookDao", "findById", e);
+        }
+        return book;
     }
 }
