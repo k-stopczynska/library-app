@@ -13,23 +13,20 @@ public class DbConnection {
 
     Logger LOGGER = Logger.getLogger("");
 
-    protected Connection getConnection() {
+    protected Connection getConnection() throws SQLException {
         Dotenv dotenv = Dotenv.configure()
                 .ignoreIfMalformed()
                 .ignoreIfMissing()
                 .load();
 
-        String url = String.valueOf(Constants.DB_URL);
+        String url = Constants.DB_URL.getValue();
         String user = dotenv.get("DB_USER");
         String password = dotenv.get("DB_PASSWORD");
-        Connection connection = null;
 
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            LOGGER.info(String.format("Connected to database %s", url));
-        } catch (SQLException e) {
-            LOGGER.throwing("DbConnection", "getConnection", e);
-        }
+        Connection connection = DriverManager.getConnection(url, user, password);
+        LOGGER.info(String.format("Connected to database %s", url));
+        System.out.println("Connection in db_connection" + connection);
+
         return connection;
     }
 }

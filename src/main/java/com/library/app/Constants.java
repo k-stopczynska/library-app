@@ -1,7 +1,8 @@
 package com.library.app;
 
 public enum Constants {
-    DB_URL ("jdbc:mysql://localhost:3306/library_db");
+    DB_URL ("jdbc:mysql://localhost:3306/library_db"),
+    DB_TABLE ("books");
 
     private final String value;
 
