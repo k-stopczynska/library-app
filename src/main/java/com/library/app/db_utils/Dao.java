@@ -9,4 +9,5 @@ public interface Dao <T> {
     Optional<T> findByTitle(String title);
     Optional<T> findById(long id);
     void delete(T t);
+    T create(T t);
 }

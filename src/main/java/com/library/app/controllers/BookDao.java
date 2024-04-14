@@ -106,4 +106,27 @@ public class BookDao extends DbConnection implements Dao <Book> {
             LOGGER.throwing("BookDao", "delete", e);
         }
     }
+
+    @Override
+    public Book create(Book book) {
+        String query = String.format("INSERT INTO %s (title) VALUES (?)", Constants.DB_TABLE.getValue());
+        try (
+                Connection connection = getConnection();
+                PreparedStatement prepStmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            prepStmt.setString(1, book.getTitle());
+            prepStmt.executeUpdate();
+            try (
+                    ResultSet rset = prepStmt.getGeneratedKeys()) {
+                if (rset.next()) {
+                    book.setId(rset.getLong(1));
+                }
+            } catch (SQLException e) {
+                LOGGER.throwing("BookDao", "findById", e);
+            }
+        } catch (SQLException e) {
+            LOGGER.throwing("BookDao", "delete", e);
+        }
+        return book;
+    }
 }
