@@ -29,5 +29,10 @@ public class App
             System.out.println("id: " + book.getId());
             System.out.println("title: " + book.getTitle());
         }
+        Optional<Book> optBook3 = bookDao.findById(3);
+        if (optBook3.isPresent()) {
+            Book book = optBook3.get();
+            bookDao.delete(book);
+        }
     }
 }

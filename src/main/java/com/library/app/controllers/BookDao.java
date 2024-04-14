@@ -92,4 +92,18 @@ public class BookDao extends DbConnection implements Dao <Book> {
         }
         return book;
     }
+
+    @Override
+    public void delete(Book book) {
+        String query = String.format("DELETE FROM %s WHERE id = ?", Constants.DB_TABLE.getValue());
+        try (
+                Connection connection = getConnection();
+                PreparedStatement prepStmt = connection.prepareStatement(query)
+        ) {
+            prepStmt.setLong(1, book.getId());
+            prepStmt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.throwing("BookDao", "delete", e);
+        }
+    }
 }
